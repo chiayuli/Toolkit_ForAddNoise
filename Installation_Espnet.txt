@@ -1,0 +1,28 @@
+1. Install Miniconda locally
+./Miniconda2-latest-Linux-x86_64.sh -p <your-directory>
+
+add path in your ~/.bashrc
+export PATH="<your-directory>/bin:<your-directory>/lib:$PATH"
+source ~/.bashrc
+
+2. download espnet and install it
+git clone https://github.com/espnet/espnet.git
+
+cd espnet/tools
+make -j -f Makefile.cuda91.gcc6
+
+cd kaldi/tools
+extras/install_phonetisaurus.sh 
+extras/install_beamformit.sh 
+
+3. test by the following commands, it shoule be no error
+cd egs/chime5/asr1
+. path
+python
+>> import torch
+>> import warpctc_pytorch
+
+4. start training
+export CUDA_VISIBLE_DEVICES=0; nohup ./run.sh --ngpu 1 --backend pytorch --etype blstmp > run.log&
+(for multi-GPUs)
+export CUDA_VISIBLE_DEVICES=0,1; nohup ./run.sh --ngpu 2 --backend pytorch --etype blstmp > run.log&
